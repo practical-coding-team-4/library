@@ -31,6 +31,7 @@ public class LibraryServiceTest {
     public void testAddBookThrowExceptionEmptyName() {
         Book book = Book.builder().name("").author("Bob").isbn("12345").build();
         libraryService.addBook(book);
+
     }
     @Test(expected=RuntimeException.class)
     public void testAddBookThrowExceptionEmptyAuthor() {
@@ -60,5 +61,35 @@ public class LibraryServiceTest {
         libraryService.addBook(book);
         assertThat(libraryService.library.keySet(), hasSize(1));
     }
+    @Test
+    public void testSearchBook_InputFullBookName(){
+        Book book = Book.builder().name("Harry Potter and the Sorcerer's Stone").author("J.K.R").isbn("12345").build();
+        libraryService.addBook(book);
+        libraryService.searchBook("Harry Potter and the Sorcerer's Stone");
+    }
+    @Test
+    public void testSearchBook_InputKeywordOfBookName(){
+        Book book = Book.builder().name("Harry Potter and the Sorcerer's Stone").author("J.K.R").isbn("12345").build();
+        Book book2 = Book.builder().name("Harry Potter and the Chamber of Secrets").author("J.K.R").isbn("12346").build();
+        Book book3 = Book.builder().name("Harry Potter And The Prisoner Of Azkaban").author("J.K.R").isbn("12347").build();
+        Book book4 = Book.builder().name("Harry Potter and the Goblet of Fire").author("J.K.R").isbn("12348").build();
+        libraryService.addBook(book);
+        libraryService.addBook(book2);
+        libraryService.addBook(book3);
+        libraryService.addBook(book4);
+        libraryService.searchBook("Harry Potter");
+    }
+    @Test(expected=RuntimeException.class)
+    public void testSearchBook_ThrowExceptionEmptyBookName(){
+        libraryService.searchBook("");
+    }
+    @Test(timeout = 5000)
+    public void testSearchBook_SearchShouldRunIn5sec(){
+        Book book = Book.builder().name("Harry Potter and the Sorcerer's Stone").author("J.K.R").isbn("12345").build();
+        libraryService.addBook(book);
+        libraryService.searchBook("Harry Potter");
+    }
+
+
 
 }
